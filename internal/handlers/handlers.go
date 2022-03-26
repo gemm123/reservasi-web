@@ -35,3 +35,22 @@ func NewHandlers(repo *Repository) {
 func (repo *Repository) Home(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "home.page.html", &models.TemplateData{})
 }
+
+func (repo *Repository) Kopi(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "kopi.page.html", &models.TemplateData{})
+}
+
+func (repo *Repository) Teh(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "teh.page.html", &models.TemplateData{})
+}
+
+func (repo *Repository) Susu(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "susu.page.html", &models.TemplateData{})
+}
+
+func (repo *Repository) Jahe(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "jahe.page.html", &models.TemplateData{})
+}
+func (repo *Repository) Jus(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "jus.page.html", &models.TemplateData{})
+}
