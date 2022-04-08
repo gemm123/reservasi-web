@@ -17,6 +17,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Use(SessionLoad)
 
 	mux.Get("/", handlers.Repo.Home)
+	mux.Get("/about", handlers.Repo.About)
 
 	mux.Route("/room", func(mux chi.Router) {
 		mux.Get("/kopi", handlers.Repo.Kopi)

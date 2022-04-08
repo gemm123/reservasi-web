@@ -36,6 +36,10 @@ func (repo *Repository) Home(writer http.ResponseWriter, request *http.Request) 
 	render.Template(writer, request, "home.page.html", &models.TemplateData{})
 }
 
+func (repo *Repository) About(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "about.page.html", &models.TemplateData{})
+}
+
 func (repo *Repository) Kopi(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "kopi.page.html", &models.TemplateData{})
 }
