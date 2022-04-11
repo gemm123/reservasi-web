@@ -1,0 +1,47 @@
+{{ template "base" . }}
+
+{{ define "content" }}
+
+<section class="vh-100">
+    <div class="container py-5 h-100">
+      <div class="row d-flex align-items-center justify-content-center h-100">
+        <div class="col-md-8 col-lg-7 col-xl-6">
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+            class="img-fluid" alt="Phone image">
+        </div>
+
+        <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+          <form method="post" action="/login" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="email">Email address</label>
+                {{ with .Form.Errors.Get "email" }}
+                    <label class="text-danger">{{ . }}</label>
+                {{ end }}
+                <input type="email" id="email" autocomplete="off" name="email" value="" required
+                    class="form-control form-control-lg {{ with .Form.Errors.Get "email" }} is-invalid {{ end }}" 
+                />
+            </div>
+  
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="password">Password</label>
+                {{ with .Form.Errors.Get "password" }}
+                    <label class="text-danger">{{ . }}</label>
+                {{ end }}
+                <input type="password" id="password" autocomplete="off" name="password" value="" required
+                    class="form-control form-control-lg {{ with .Form.Errors.Get "password" }} is-invalid {{ end }}" 
+                />
+            </div>
+  
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+  
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{{ end }}
