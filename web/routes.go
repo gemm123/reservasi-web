@@ -16,15 +16,21 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
+	fileServer := http.FileServer(http.Dir("./static/"))
+	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 
+	mux.Get("/login", handlers.Repo.ShowLogin)
+	mux.Post("/login", handlers.Repo.PostShowLogin)
+
 	mux.Route("/room", func(mux chi.Router) {
-		mux.Get("/kopi", handlers.Repo.Kopi)
-		mux.Get("/teh", handlers.Repo.Teh)
-		mux.Get("/susu", handlers.Repo.Susu)
-		mux.Get("/jahe", handlers.Repo.Jahe)
-		mux.Get("/jus", handlers.Repo.Jus)
+		mux.Get("/president", handlers.Repo.President)
+		mux.Get("/royal", handlers.Repo.Royal)
+		mux.Get("/tower-club", handlers.Repo.TowerClub)
+		mux.Get("/grand-deluxe", handlers.Repo.GrandDeluxe)
+		mux.Get("/deluxe", handlers.Repo.Deluxe)
 	})
 
 	return mux
