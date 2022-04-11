@@ -58,7 +58,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 //menambahkan data di semua templates
 func AddDefaultData(td *models.TemplateData, request *http.Request) *models.TemplateData {
-	td.Flash = app.Session.PopString(request.Context(), "flash")
+	td.Success = app.Session.PopString(request.Context(), "success")
 	td.Error = app.Session.PopString(request.Context(), "error")
 	td.Warning = app.Session.PopString(request.Context(), "warning")
 	td.CSRFToken = nosurf.Token(request)
