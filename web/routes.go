@@ -24,6 +24,9 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/login", handlers.Repo.ShowLogin)
 	mux.Post("/login", handlers.Repo.PostShowLogin)
+	mux.Get("/register", handlers.Repo.Register)
+	mux.Post("/register", handlers.Repo.PostRegister)
+	mux.Get("/logout", handlers.Repo.Logout)
 
 	mux.Route("/room", func(mux chi.Router) {
 		mux.Get("/president", handlers.Repo.President)
@@ -31,6 +34,12 @@ func routes(app *config.AppConfig) http.Handler {
 		mux.Get("/tower-club", handlers.Repo.TowerClub)
 		mux.Get("/grand-deluxe", handlers.Repo.GrandDeluxe)
 		mux.Get("/deluxe", handlers.Repo.Deluxe)
+	})
+
+	mux.Route("/admin", func(mux chi.Router) {
+		mux.Use(Auth)
+
+		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 	})
 
 	return mux
