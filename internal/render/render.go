@@ -60,7 +60,6 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 func AddDefaultData(td *models.TemplateData, request *http.Request) *models.TemplateData {
 	td.Success = app.Session.PopString(request.Context(), "success")
 	td.Error = app.Session.PopString(request.Context(), "error")
-	td.Warning = app.Session.PopString(request.Context(), "warning")
 	td.CSRFToken = nosurf.Token(request)
 	if app.Session.Exists(request.Context(), "user_id") {
 		td.IsAuthenticated = 1
