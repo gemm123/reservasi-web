@@ -10,7 +10,6 @@ type TemplateData struct {
 	Data            map[string]interface{}
 	CSRFToken       string
 	Success         string
-	Warning         string
 	Error           string
 	Form            *forms.Form
 	IsAuthenticated int
