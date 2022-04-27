@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gemm123/reservasi-web/internal/config"
 	"github.com/gemm123/reservasi-web/internal/driver"
@@ -66,6 +69,62 @@ func (repo *Repository) ShowLogin(writer http.ResponseWriter, request *http.Requ
 	render.Template(writer, request, "login.page.html", &models.TemplateData{
 		Form: forms.New(nil),
 	})
+}
+
+type jsonResponse struct {
+	OK        bool   `json:"ok"`
+	Message   string `json:"message"`
+	RoomID    string `json:"room_id"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+}
+
+func (repo *Repository) CheckAvailability(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		response := jsonResponse{
+			OK:      false,
+			Message: "Internal server error",
+		}
+
+		out, _ := json.Marshal(response)
+		writer.Header().Add("Content-Type", "application/json")
+		writer.Write(out)
+		return
+	}
+
+	sd := request.Form.Get("start")
+	ed := request.Form.Get("end")
+
+	layout := "2006-01-02"
+	startDate, _ := time.Parse(layout, sd)
+	endDate, _ := time.Parse(layout, ed)
+	roomID, _ := strconv.Atoi(request.Form.Get("room_id"))
+
+	available, err := repo.DB.SearchAvailabilityByDatesAndRoomID(startDate, endDate, roomID)
+	if err != nil {
+		response := jsonResponse{
+			OK:      false,
+			Message: "Error queying database",
+		}
+
+		out, _ := json.Marshal(response)
+		writer.Header().Add("Content-Type", "application/json")
+		writer.Write(out)
+		return
+	}
+
+	response := jsonResponse{
+		OK:        available,
+		Message:   "",
+		StartDate: sd,
+		EndDate:   ed,
+		RoomID:    strconv.Itoa(roomID),
+	}
+
+	out, _ := json.Marshal(response)
+	writer.Header().Add("Content-Type", "application/json")
+	writer.Write(out)
 }
 
 func (repo *Repository) Register(writer http.ResponseWriter, request *http.Request) {
