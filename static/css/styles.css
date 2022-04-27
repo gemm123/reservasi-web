@@ -5,3 +5,7 @@
     height: 1px;
     background: #eee;
 }
+
+.datepicker {
+    z-index: 10000;
+}
