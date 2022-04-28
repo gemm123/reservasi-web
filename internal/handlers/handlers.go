@@ -127,6 +127,59 @@ func (repo *Repository) CheckAvailability(writer http.ResponseWriter, request *h
 	writer.Write(out)
 }
 
+func (repo *Repository) BookRoom(writer http.ResponseWriter, request *http.Request) {
+	roomID, _ := strconv.Atoi(request.URL.Query().Get("id"))
+	sd := request.URL.Query().Get("s")
+	ed := request.URL.Query().Get("e")
+
+	layout := "2006-01-02"
+	startDate, _ := time.Parse(layout, sd)
+	endDate, _ := time.Parse(layout, ed)
+
+	var reservation models.Reservation
+
+	room, err := repo.DB.GetRoomByID(roomID)
+	if err != nil {
+		repo.App.Session.Put(request.Context(), "error", "Gagal mendapatkan room dari database!")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	reservation.StartDate = startDate
+	reservation.EndDate = endDate
+	reservation.RoomID = roomID
+	reservation.Room.RoomName = room.RoomName
+
+	repo.App.Session.Put(request.Context(), "reservation", reservation)
+
+	http.Redirect(writer, request, "/make-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) Reservation(writer http.ResponseWriter, request *http.Request) {
+	reservation, ok := repo.App.Session.Get(request.Context(), "reservation").(models.Reservation)
+	if !ok {
+		repo.App.Session.Put(request.Context(), "error", "Gagal mendapatkan session reservation")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	sd := reservation.StartDate.Format("2006-01-02")
+	ed := reservation.EndDate.Format("2006-01-02")
+
+	stringMap := make(map[string]string)
+	stringMap["start_date"] = sd
+	stringMap["end_date"] = ed
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(writer, request, "make-reservation.page.html", &models.TemplateData{
+		Form:      forms.New(nil),
+		StringMap: stringMap,
+		Data:      data,
+	})
+}
+
 func (repo *Repository) Register(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "register.page.html", &models.TemplateData{
 		Form: forms.New(nil),
