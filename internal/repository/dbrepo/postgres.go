@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gemm123/reservasi-web/internal/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -74,4 +75,26 @@ func (repo *postgresDBRepo) SearchAvailabilityByDatesAndRoomID(start, end time.T
 	}
 
 	return false, err
+}
+
+//get room by id
+func (repo *postgresDBRepo) GetRoomByID(roomID int) (models.Room, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `select id, room_name, created_at, updated_at from rooms where id = $1`
+
+	var room models.Room
+	row := repo.DB.QueryRowContext(ctx, query, roomID)
+	err := row.Scan(
+		&room.ID,
+		&room.RoomName,
+		&room.CreatedAt,
+		&room.UpdatedAt,
+	)
+	if err != nil {
+		return room, err
+	}
+
+	return room, nil
 }
