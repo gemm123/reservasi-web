@@ -180,6 +180,109 @@ func (repo *Repository) Reservation(writer http.ResponseWriter, request *http.Re
 	})
 }
 
+func (repo *Repository) PostReservation(writer http.ResponseWriter, request *http.Request) {
+	res, ok := repo.App.Session.Get(request.Context(), "reservation").(models.Reservation)
+	if !ok {
+		repo.App.Session.Put(request.Context(), "error", "Gagal mendapatkan session reservation")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	err := request.ParseForm()
+	if err != nil {
+		repo.App.Session.Put(request.Context(), "error", "gagal parse form")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	sd := request.Form.Get("start_date")
+	ed := request.Form.Get("end_date")
+	layout := "2006-01-02"
+	startDate, _ := time.Parse(layout, sd)
+	endDate, _ := time.Parse(layout, ed)
+
+	roomID, err := strconv.Atoi(request.Form.Get("room_id"))
+	if err != nil {
+		repo.App.Session.Put(request.Context(), "error", "data salah")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	reservation := models.Reservation{
+		Name:      request.Form.Get("name"),
+		Email:     request.Form.Get("email"),
+		Phone:     request.Form.Get("phone"),
+		StartDate: startDate,
+		EndDate:   endDate,
+		RoomID:    roomID,
+		Room:      res.Room,
+	}
+
+	form := forms.New(request.PostForm)
+	form.Required("name", "email", "phone")
+	form.MinLength("name", 3)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		stringMap := make(map[string]string)
+		stringMap["start_date"] = sd
+		stringMap["end_date"] = ed
+
+		render.Template(writer, request, "make-reservation.page.html", &models.TemplateData{
+			Form:      form,
+			Data:      data,
+			StringMap: stringMap,
+		})
+
+		return
+	}
+
+	reservationID, err := repo.DB.InsertReservation(reservation)
+	if err != nil {
+		repo.App.Session.Put(request.Context(), "error", "Gagal insert ke database")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	roomRestriction := models.RoomRestrictions{
+		StartDate:     startDate,
+		EndDate:       endDate,
+		RoomID:        roomID,
+		ReservationID: reservationID,
+		RestrictionID: 1,
+	}
+
+	err = repo.DB.InsertRoomRestriction(roomRestriction)
+	if err != nil {
+		repo.App.Session.Put(request.Context(), "error", "Gagal insert ke database")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	repo.App.Session.Put(request.Context(), "reservation", reservation)
+	http.Redirect(writer, request, "/reservation-summary", http.StatusSeeOther)
+}
+
+func (repo *Repository) ReservationSummary(writer http.ResponseWriter, request *http.Request) {
+	reservation, ok := repo.App.Session.Get(request.Context(), "reservation").(models.Reservation)
+	if !ok {
+		repo.App.Session.Put(request.Context(), "error", "Gagal mendapatkan session reservation")
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		return
+	}
+
+	repo.App.Session.Remove(request.Context(), "reservation")
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(writer, request, "reservation-summary.page.html", &models.TemplateData{
+		Data: data,
+	})
+}
+
 func (repo *Repository) Register(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "register.page.html", &models.TemplateData{
 		Form: forms.New(nil),

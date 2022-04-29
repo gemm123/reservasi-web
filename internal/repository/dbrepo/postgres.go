@@ -60,8 +60,7 @@ func (repo *postgresDBRepo) SearchAvailabilityByDatesAndRoomID(start, end time.T
 
 	query := `select count(id)
 				from room_restrictions
-				where room_id = $1 and $2 < end_date and $3 > start_date;
-			`
+				where room_id = $1 and $2 < end_date and $3 > start_date;`
 
 	var numRows int
 	row := repo.DB.QueryRowContext(ctx, query, roomID, start, end)
@@ -97,4 +96,55 @@ func (repo *postgresDBRepo) GetRoomByID(roomID int) (models.Room, error) {
 	}
 
 	return room, nil
+}
+
+//insert reservasi ke database
+func (repo *postgresDBRepo) InsertReservation(reservation models.Reservation) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var reservationID int
+
+	query := `insert into reservations (name, email, phone, start_date, end_date, room_id, created_at, updated_at)
+				values($1, $2, $3, $4, $5, $6, $7, $8) returning id`
+
+	err := repo.DB.QueryRowContext(ctx, query,
+		reservation.Name,
+		reservation.Email,
+		reservation.Phone,
+		reservation.StartDate,
+		reservation.EndDate,
+		reservation.RoomID,
+		reservation.CreatedAt,
+		reservation.UpdatedAt,
+	).Scan(&reservationID)
+	if err != nil {
+		return 0, err
+	}
+
+	return reservationID, nil
+}
+
+func (repo *postgresDBRepo) InsertRoomRestriction(roomRestriction models.RoomRestrictions) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `insert into room_restrictions
+				(start_date, end_date, room_id, reservation_id, restriction_id, created_at, updated_at)
+				values($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err := repo.DB.ExecContext(ctx, query,
+		roomRestriction.StartDate,
+		roomRestriction.EndDate,
+		roomRestriction.RoomID,
+		roomRestriction.ReservationID,
+		roomRestriction.RestrictionID,
+		time.Now(),
+		time.Now(),
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

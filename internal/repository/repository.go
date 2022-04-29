@@ -11,4 +11,6 @@ type DatabaseRepo interface {
 	Authenticated(email, password string) (int, string, error)
 	SearchAvailabilityByDatesAndRoomID(start, end time.Time, roomID int) (bool, error)
 	GetRoomByID(roomID int) (models.Room, error)
+	InsertReservation(reservation models.Reservation) (int, error)
+	InsertRoomRestriction(roomRestriction models.RoomRestrictions) error
 }
