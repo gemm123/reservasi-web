@@ -1,0 +1,43 @@
+{{ template "base" . }}
+
+{{ define "content" }}
+
+    {{ $reservation := index .Data "reservation" }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Reservasi Berhasil!</h1>
+                <table class="table table-striped">
+                    <thead></thead>
+                    <tbody>
+                        <tr>
+                            <td>Nama:</td>
+                            <td>{{ $reservation.Name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Kamar:</td>
+                            <td>{{ $reservation.Room.RoomName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Arrival:</td>
+                            <td>{{ $reservation.StartDate }}</td>
+                        </tr>
+                        <tr>
+                            <td>Departure:</td>
+                            <td>{{ $reservation.EndDate }}</td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>{{ $reservation.Email }}</td>
+                        </tr>
+                        <tr>
+                            <td>Phone:</td>
+                            <td>{{ $reservation.Phone }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{{ end }}
