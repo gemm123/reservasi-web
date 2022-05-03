@@ -8,18 +8,25 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/gemm123/reservasi-web/internal/config"
 	"github.com/gemm123/reservasi-web/internal/models"
 	"github.com/justinas/nosurf"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": HumanDate,
+}
 
 var app *config.AppConfig
 
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+func HumanDate(date time.Time) string {
+	return date.Format("2006-01-02")
 }
 
 func CreateTemplateCache() (map[string]*template.Template, error) {
