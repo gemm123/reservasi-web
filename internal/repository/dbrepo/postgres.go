@@ -125,6 +125,7 @@ func (repo *postgresDBRepo) InsertReservation(reservation models.Reservation) (i
 	return reservationID, nil
 }
 
+//insert room restriction ke database
 func (repo *postgresDBRepo) InsertRoomRestriction(roomRestriction models.RoomRestrictions) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -147,4 +148,46 @@ func (repo *postgresDBRepo) InsertRoomRestriction(roomRestriction models.RoomRes
 	}
 
 	return nil
+}
+
+//return slice resersevation
+func (repo *postgresDBRepo) ShowAllReservation() ([]models.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var resersevations []models.Reservation
+
+	query := `select res.id, res.name, res.start_date, res.end_date, room.room_name
+				from reservations res
+				left join rooms room on (res.room_id = room.id)
+				order by res.start_date asc`
+
+	rows, err := repo.DB.QueryContext(ctx, query)
+	if err != nil {
+		return resersevations, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var resersevation models.Reservation
+		err := rows.Scan(
+			&resersevation.ID,
+			&resersevation.Name,
+			&resersevation.StartDate,
+			&resersevation.EndDate,
+			&resersevation.Room.RoomName,
+		)
+		if err != nil {
+			return resersevations, err
+		}
+
+		resersevations = append(resersevations, resersevation)
+	}
+
+	if err = rows.Err(); err != nil {
+		return resersevations, err
+	}
+
+	return resersevations, nil
 }

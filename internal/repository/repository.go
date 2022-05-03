@@ -13,4 +13,5 @@ type DatabaseRepo interface {
 	GetRoomByID(roomID int) (models.Room, error)
 	InsertReservation(reservation models.Reservation) (int, error)
 	InsertRoomRestriction(roomRestriction models.RoomRestrictions) error
+	ShowAllReservation() ([]models.Reservation, error)
 }
