@@ -10,6 +10,7 @@ import (
 	"github.com/gemm123/reservasi-web/internal/config"
 	"github.com/gemm123/reservasi-web/internal/driver"
 	"github.com/gemm123/reservasi-web/internal/forms"
+	"github.com/gemm123/reservasi-web/internal/helpers"
 	"github.com/gemm123/reservasi-web/internal/models"
 	"github.com/gemm123/reservasi-web/internal/render"
 	"github.com/gemm123/reservasi-web/internal/repository"
@@ -366,4 +367,19 @@ func (repo *Repository) Logout(writer http.ResponseWriter, request *http.Request
 
 func (repo *Repository) AdminDashboard(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "admin-dashboard.page.html", &models.TemplateData{})
+}
+
+func (repo *Repository) AdminShowAllReservation(writer http.ResponseWriter, request *http.Request) {
+	reservations, err := repo.DB.ShowAllReservation()
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservations"] = reservations
+
+	render.Template(writer, request, "admin-all-reservation.page.html", &models.TemplateData{
+		Data: data,
+	})
 }
