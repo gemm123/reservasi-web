@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="/static/css/styles.css" >
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/css/datepicker-bs5.min.css">
+    {{ block "css" . }}
+
+    {{ end }}  
     <style>
         /* override styles here */
         .notie-container {
@@ -33,7 +36,7 @@
                     <a href="#" class="text-decoration-none">New Reservation</a>
                 </li>
                 <li class="list-group-item py-1">
-                    <a href="#" class="text-decoration-none">All Reservation</a>
+                    <a href="/admin/all-reservation" class="text-decoration-none">All Reservation</a>
                 </li>
             </div>
             </div>
@@ -91,7 +94,10 @@
         <script src="https://unpkg.com/notie"></script>
         <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="/static/js/app.js"></script>    
+        <script src="/static/js/app.js"></script>
+        {{ block "js" . }}
+
+        {{ end }}    
         
         <script>
         let attention = Prompt();
