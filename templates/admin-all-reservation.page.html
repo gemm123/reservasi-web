@@ -31,6 +31,11 @@
                         <td>{{ .Room.RoomName }}</td>
                         <td>{{ humanDate .StartDate }}</td>
                         <td>{{ humanDate .EndDate }}</td>
+                        <td>
+                            <div class="badge bg-info text-wrap p-2" >
+                                <a class="link-light" href="/admin/all-reservation/{{ .ID }}">Detail</a>
+                            </div>
+                        </td>
                     </tr>
                 {{ end }}
                 </tbody>
@@ -45,7 +50,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const dataTable = new simpleDatatables.DataTable("#all-res", {
-            select: 3, sort: "desc",
+            select: 3, 
+            sort: "desc",
         })
     })
 </script>
