@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gemm123/reservasi-web/internal/config"
@@ -381,5 +382,28 @@ func (repo *Repository) AdminShowAllReservation(writer http.ResponseWriter, requ
 
 	render.Template(writer, request, "admin-all-reservation.page.html", &models.TemplateData{
 		Data: data,
+	})
+}
+
+func (repo *Repository) AdminShowReservation(writer http.ResponseWriter, request *http.Request) {
+	splitURL := strings.Split(request.RequestURI, "/")
+	id, err := strconv.Atoi(splitURL[3])
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	reservation, err := repo.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(writer, request, "admin-show-reservation.page.html", &models.TemplateData{
+		Data: data,
+		Form: forms.New(nil),
 	})
 }
