@@ -3,6 +3,8 @@
 {{ define "content" }}
 
     {{ $reservation := index .Data "reservation" }}
+    {{ $startDate := index .StringMap "start_date" }}
+    {{ $endDate := index .StringMap "end_date" }}
     <div class="container">
         <div class="row">
             <div class="col">
@@ -20,11 +22,11 @@
                         </tr>
                         <tr>
                             <td>Arrival:</td>
-                            <td>{{ $reservation.StartDate }}</td>
+                            <td>{{ $startDate }}</td>
                         </tr>
                         <tr>
                             <td>Departure:</td>
-                            <td>{{ $reservation.EndDate }}</td>
+                            <td>{{ $endDate }}</td>
                         </tr>
                         <tr>
                             <td>Email:</td>

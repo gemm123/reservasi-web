@@ -280,8 +280,15 @@ func (repo *Repository) ReservationSummary(writer http.ResponseWriter, request *
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 
+	startDate := reservation.StartDate.Format("2006-01-02")
+	endDate := reservation.EndDate.Format("2006-01-02")
+	stringMap := make(map[string]string)
+	stringMap["start_date"] = startDate
+	stringMap["end_date"] = endDate
+
 	render.Template(writer, request, "reservation-summary.page.html", &models.TemplateData{
-		Data: data,
+		Data:      data,
+		StringMap: stringMap,
 	})
 }
 
