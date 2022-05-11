@@ -192,6 +192,54 @@ func (repo *postgresDBRepo) ShowAllReservation() ([]models.Reservation, error) {
 	return resersevations, nil
 }
 
+func (repo *postgresDBRepo) ShowNewReservation() ([]models.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var resersevations []models.Reservation
+
+	query := `select res.id, res.name, res.email, res.phone, res.start_date, res.end_date,
+				res.room_id, res.created_at, res.updated_at, room.id, room.room_name
+				from reservations res
+				left join rooms room on (res.room_id = room.id)
+				where processed = 0
+				order by res.start_date asc`
+
+	rows, err := repo.DB.QueryContext(ctx, query)
+	if err != nil {
+		return resersevations, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var resersevation models.Reservation
+		err := rows.Scan(
+			&resersevation.ID,
+			&resersevation.Name,
+			&resersevation.Email,
+			&resersevation.Phone,
+			&resersevation.StartDate,
+			&resersevation.EndDate,
+			&resersevation.RoomID,
+			&resersevation.CreatedAt,
+			&resersevation.UpdatedAt,
+			&resersevation.Room.ID,
+			&resersevation.Room.RoomName,
+		)
+		if err != nil {
+			return resersevations, err
+		}
+
+		resersevations = append(resersevations, resersevation)
+	}
+
+	if err = rows.Err(); err != nil {
+		return resersevations, err
+	}
+
+	return resersevations, nil
+}
+
 func (repo *postgresDBRepo) GetReservationByID(id int) (models.Reservation, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

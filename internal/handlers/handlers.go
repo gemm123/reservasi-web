@@ -373,10 +373,6 @@ func (repo *Repository) Logout(writer http.ResponseWriter, request *http.Request
 	http.Redirect(writer, request, "/login", http.StatusSeeOther)
 }
 
-func (repo *Repository) AdminDashboard(writer http.ResponseWriter, request *http.Request) {
-	render.Template(writer, request, "admin-dashboard.page.html", &models.TemplateData{})
-}
-
 func (repo *Repository) AdminShowAllReservation(writer http.ResponseWriter, request *http.Request) {
 	reservations, err := repo.DB.ShowAllReservation()
 	if err != nil {
@@ -392,7 +388,7 @@ func (repo *Repository) AdminShowAllReservation(writer http.ResponseWriter, requ
 	})
 }
 
-func (repo *Repository) AdminShowReservation(writer http.ResponseWriter, request *http.Request) {
+func (repo *Repository) AdminShowAllReservationByID(writer http.ResponseWriter, request *http.Request) {
 	splitURL := strings.Split(request.RequestURI, "/")
 	id, err := strconv.Atoi(splitURL[3])
 	if err != nil {
@@ -409,7 +405,45 @@ func (repo *Repository) AdminShowReservation(writer http.ResponseWriter, request
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 
-	render.Template(writer, request, "admin-show-reservation.page.html", &models.TemplateData{
+	render.Template(writer, request, "admin-show-all-reservation.page.html", &models.TemplateData{
+		Data: data,
+		Form: forms.New(nil),
+	})
+}
+
+func (repo *Repository) AdminShowNewReservation(writer http.ResponseWriter, request *http.Request) {
+	reservations, err := repo.DB.ShowNewReservation()
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservations"] = reservations
+
+	render.Template(writer, request, "admin-new-reservation.page.html", &models.TemplateData{
+		Data: data,
+	})
+}
+
+func (repo *Repository) AdminShowNewReservationByID(writer http.ResponseWriter, request *http.Request) {
+	splitURL := strings.Split(request.RequestURI, "/")
+	id, err := strconv.Atoi(splitURL[3])
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	reservation, err := repo.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(writer, request, "admin-show-new-reservation.page.html", &models.TemplateData{
 		Data: data,
 		Form: forms.New(nil),
 	})
