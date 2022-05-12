@@ -75,7 +75,7 @@
     {{ end }}
 
     <footer class="bg-light text-center text-lg-start">
-      <!-- Grid container -->
+
       <div class="container p-4">
 
         <div class="row">
@@ -84,31 +84,22 @@
           </div>
         </div>
 
-        <!--Grid row-->
         <div class="row">
-          <!--Grid column-->
           <div class="col-sm-5 ms-5">
             <p>Jalan Angkasa No. 1 - 10 Bandung Jawa Barat 37729 Indonesia</p>
             <p>0873822736484</p>
           </div>
-          <!--Grid column-->
           <div class="col-sm-3"></div>
-          <!--Grid column-->
           <div class="col-sm-3">
             <p>Skyline Hotel</p>
             <p>reservation@skylinehotel.com</p>
           </div>
-          <!--Grid column-->
         </div>
-        <!--Grid row-->
       </div>
-      <!-- Grid container -->
     
-      <!-- Copyright -->
       <div class="text-center p-3">
         Copyrigth &copy 2022 Skyline Hotel. All Rights Reserved 
       </div>
-      <!-- Copyright -->
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -127,9 +118,7 @@
       (function () {
           'use strict';
           window.addEventListener('load', function () {
-              // Fetch all the forms we want to apply custom Bootstrap validation styles to
               let forms = document.getElementsByClassName('needs-validation');
-              // Loop over them and prevent submission
               Array.prototype.filter.call(forms, function (form) {
                   form.addEventListener('submit', function (event) {
                       if (form.checkValidity() === false) {
