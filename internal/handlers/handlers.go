@@ -39,6 +39,7 @@ func NewHandlers(repo *Repository) {
 	Repo = repo
 }
 
+//menampilkan page home
 func (repo *Repository) Home(writer http.ResponseWriter, request *http.Request) {
 	render.Template(writer, request, "home.page.html", &models.TemplateData{})
 }
@@ -298,6 +299,7 @@ func (repo *Repository) Register(writer http.ResponseWriter, request *http.Reque
 	})
 }
 
+//proses register
 func (repo *Repository) PostRegister(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
@@ -367,6 +369,7 @@ func (repo *Repository) PostShowLogin(writer http.ResponseWriter, request *http.
 	http.Redirect(writer, request, "/", http.StatusSeeOther)
 }
 
+//proses logout
 func (repo *Repository) Logout(writer http.ResponseWriter, request *http.Request) {
 	_ = repo.App.Session.Destroy(request.Context())
 	_ = repo.App.Session.RenewToken(request.Context())
