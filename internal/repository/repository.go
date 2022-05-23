@@ -16,4 +16,5 @@ type DatabaseRepo interface {
 	ShowAllReservation() ([]models.Reservation, error)
 	ShowNewReservation() ([]models.Reservation, error)
 	GetReservationByID(id int) (models.Reservation, error)
+	UpdateProcessedReservation(id int) error
 }

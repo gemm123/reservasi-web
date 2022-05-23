@@ -12,7 +12,7 @@
         <p>
             <strong>Arrival: </strong>{{ humanDate $reservation.StartDate }}<br>
             <strong>Departure: </strong>{{ humanDate $reservation.EndDate }}<br>
-            <strong>Kamar: </strong>{{ $reservation.Room.RoomName }}<br>
+            <strong>Room: </strong>{{ $reservation.Room.RoomName }}<br>
         </p>
     </div>
     <div class="row">
@@ -55,7 +55,7 @@
             <div class="float-start">
                 <input type="submit" class="btn btn-primary" value="Save">
                 <a href="/admin/new-reservation" class="btn btn-warning">Cancel</a>
-                <a href="#!" class="btn btn-info">Processed</a>
+                <a href="#!" class="btn btn-info" onclick="processRes({{ $reservation.ID }})">Processed</a>
             </div>
 
             <div class="float-end">
@@ -71,10 +71,10 @@
     function processRes(id) {
         attention.custom({
             icon: 'warning',
-            msg: 'apakah kamu yakin?',
+            msg: 'Are you sure?',
             callback: function(result) {
-                if(result) {
-                    window.location.href = "/admin/process-reservation/" + id 
+                if(result !== false) {
+                    window.location.href = "/admin/process-reservation/" + id;
                 }
             }
         })

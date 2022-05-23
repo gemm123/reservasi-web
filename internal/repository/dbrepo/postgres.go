@@ -273,3 +273,17 @@ func (repo *postgresDBRepo) GetReservationByID(id int) (models.Reservation, erro
 
 	return resersevation, nil
 }
+
+func (repo *postgresDBRepo) UpdateProcessedReservation(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "update reservations set processed = 1 where id = $1"
+
+	_, err := repo.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

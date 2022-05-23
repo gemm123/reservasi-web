@@ -16,6 +16,7 @@ import (
 	"github.com/gemm123/reservasi-web/internal/render"
 	"github.com/gemm123/reservasi-web/internal/repository"
 	"github.com/gemm123/reservasi-web/internal/repository/dbrepo"
+	"github.com/go-chi/chi/v5"
 )
 
 //repo yang digunakan oleh handlers
@@ -450,6 +451,17 @@ func (repo *Repository) AdminShowNewReservationByID(writer http.ResponseWriter, 
 		Data: data,
 		Form: forms.New(nil),
 	})
+}
+
+func (repo *Repository) AdminProcessReservation(writer http.ResponseWriter, request *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+	err := repo.DB.UpdateProcessedReservation(id)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	http.Redirect(writer, request, "/admin/new-reservation", http.StatusSeeOther)
 }
 
 func (repo *Repository) AdminAccount(writer http.ResponseWriter, request *http.Request) {
