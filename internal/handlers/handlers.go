@@ -359,13 +359,13 @@ func (repo *Repository) PostShowLogin(writer http.ResponseWriter, request *http.
 
 	id, _, err := repo.DB.Authenticated(email, password)
 	if err != nil {
-		repo.App.Session.Put(request.Context(), "error", "Email atau password salah")
+		repo.App.Session.Put(request.Context(), "error", "Email atau password wrong")
 		http.Redirect(writer, request, "/login", http.StatusSeeOther)
 		return
 	}
 
 	repo.App.Session.Put(request.Context(), "user_id", id)
-	repo.App.Session.Put(request.Context(), "success", "Berhasil login")
+	repo.App.Session.Put(request.Context(), "success", "Success login")
 	http.Redirect(writer, request, "/", http.StatusSeeOther)
 }
 
@@ -450,4 +450,8 @@ func (repo *Repository) AdminShowNewReservationByID(writer http.ResponseWriter, 
 		Data: data,
 		Form: forms.New(nil),
 	})
+}
+
+func (repo *Repository) AdminAccount(writer http.ResponseWriter, request *http.Request) {
+	render.Template(writer, request, "admin-account.page.html", &models.TemplateData{})
 }

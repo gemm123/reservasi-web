@@ -32,7 +32,7 @@ func (f *Form) Required(fields ...string) {
 	for _, field := range fields {
 		value := f.Get(field)
 		if strings.TrimSpace(value) == "" {
-			f.Errors.Add(field, "Tidak boleh kosong")
+			f.Errors.Add(field, "Can't be empty")
 		}
 	}
 }
@@ -50,7 +50,7 @@ func (f *Form) Has(field string) bool {
 func (f *Form) MinLength(field string, length int) bool {
 	x := f.Get(field)
 	if len(x) < length {
-		f.Errors.Add(field, fmt.Sprintf("Minimal berisi %d karakter", length))
+		f.Errors.Add(field, fmt.Sprintf("Minimal %d character", length))
 		return false
 	}
 	return true

@@ -9,7 +9,7 @@
 
             <h1>Make a Reservation</h1>
             <p><strong>Reservation Details</strong><br>
-            Kamar: {{$reservation.Room.RoomName}}<br>
+            Room: {{$reservation.Room.RoomName}}<br>
             Arrival: {{index .StringMap "start_date"}}<br>
             Departure: {{index .StringMap "end_date"}}
             </p>
@@ -23,7 +23,7 @@
                 <input type="hidden" name="room_id" value="{{$reservation.RoomID}}">
 
                 <div class="form-group mt-3">
-                    <label for="name">Nama Lengkap:</label>
+                    <label for="name">Full Name:</label>
                     {{with .Form.Errors.Get "name"}}
                         <label class="text-danger">{{.}}</label>
                     {{end}}

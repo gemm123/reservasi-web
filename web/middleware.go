@@ -29,7 +29,7 @@ func SessionLoad(next http.Handler) http.Handler {
 func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !helpers.IsAuthenticated(request) {
-			session.Put(request.Context(), "error", "Login terlebih dahulu!")
+			session.Put(request.Context(), "error", "Login first!")
 			http.Redirect(writer, request, "/login", http.StatusSeeOther)
 			return
 		}
