@@ -59,7 +59,7 @@
             </div>
 
             <div class="float-end">
-                <a href="#!" class="btn btn-danger">Delete</a>
+                <a href="#!" class="btn btn-danger" onclick="deleteRes({{ $reservation.ID }})">Delete</a>
             </div>
         </form>
     </div>
@@ -79,5 +79,17 @@
             }
         })
     }
+
+    function deleteRes(id) {
+            attention.custom({
+                icon: 'warning',
+                msg: 'Are you sure?',
+                callback: function (result) {
+                    if (result !== false) {
+                        window.location.href = "/admin/delete-reservation/" + id
+                    }
+                }
+            })
+        }
 </script>
 {{ end }}

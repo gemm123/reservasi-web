@@ -32,9 +32,7 @@
                         <td>{{ humanDate .StartDate }}</td>
                         <td>{{ humanDate .EndDate }}</td>
                         <td>
-                            <div class="badge bg-info text-wrap p-2" >
-                                <a class="link-light" href="/admin/all-reservation/{{ .ID }}">Edit</a>
-                            </div>
+                            <a href="/admin/all-reservation/{{ .ID }}" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
                         </td>
                     </tr>
                 {{ end }}
