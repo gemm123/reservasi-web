@@ -51,3 +51,8 @@ body {
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
+
+.form-control{
+    border-color: #edd99c;
+    border-radius: 10px;
+}

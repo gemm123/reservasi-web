@@ -2,19 +2,23 @@
 
 {{ define "content" }}
 
+
+<img src="/static/images/booking-reservation.png" alt="" class="img-fluid">
+
 <div class="container">
     <div class="row">
         <div class="col">
             {{$reservation := index .Data "reservation"}}
 
-            <h1>Make a Reservation</h1>
-            <p><strong>Reservation Details</strong><br>
+            <h1 class="mb-0">Make a Reservation</h1>
+            <p>
+                Fill in your personal data correctly!
+            </p>
+
             Room: {{$reservation.Room.RoomName}}<br>
             Arrival: {{index .StringMap "start_date"}}<br>
             Departure: {{index .StringMap "end_date"}}
             </p>
-
-
 
             <form action="/make-reservation" method="post" class="" novalidate>
                 <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
@@ -53,7 +57,7 @@
                 </div>
 
                 <hr>
-                <input type="submit" class="btn btn-primary" value="Make Reservation">
+                <input type="submit" class="btn btn-warning" value="Make Reservation" style="background-color: #edd99c;">
             </form>
         </div>
     </div>

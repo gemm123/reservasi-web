@@ -327,12 +327,12 @@ func (repo *Repository) PostRegister(writer http.ResponseWriter, request *http.R
 
 	err = repo.DB.InsertUser(name, email, password)
 	if err != nil {
-		repo.App.Session.Put(request.Context(), "error", "Gagal register user!")
+		repo.App.Session.Put(request.Context(), "error", "Register failed!")
 		http.Redirect(writer, request, "/register", http.StatusSeeOther)
 		return
 	}
 
-	repo.App.Session.Put(request.Context(), "success", "Register berhasil")
+	repo.App.Session.Put(request.Context(), "success", "Register success")
 	http.Redirect(writer, request, "/login", http.StatusSeeOther)
 }
 
@@ -462,6 +462,84 @@ func (repo *Repository) AdminProcessReservation(writer http.ResponseWriter, requ
 	}
 
 	http.Redirect(writer, request, "/admin/new-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) AdminDeleteNewReservation(writer http.ResponseWriter, request *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+	_ = repo.DB.DeleteReservationByID(id)
+
+	repo.App.Session.Put(request.Context(), "success", "Reservation deleted")
+
+	http.Redirect(writer, request, "/admin/new-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) AdminDeleteAllReservation(writer http.ResponseWriter, request *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+	_ = repo.DB.DeleteReservationByID(id)
+
+	repo.App.Session.Put(request.Context(), "success", "Reservation deleted")
+
+	http.Redirect(writer, request, "/admin/all-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) AdminPostNewReservation(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+
+	reservation, err := repo.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	reservation.Name = request.Form.Get("name")
+	reservation.Email = request.Form.Get("email")
+	reservation.Phone = request.Form.Get("phone")
+
+	err = repo.DB.UpdateReservation(reservation)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	repo.App.Session.Put(request.Context(), "success", "Changes saved")
+
+	http.Redirect(writer, request, "/admin/new-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) AdminPostAllReservation(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	id, _ := strconv.Atoi(chi.URLParam(request, "id"))
+
+	reservation, err := repo.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	reservation.Name = request.Form.Get("name")
+	reservation.Email = request.Form.Get("email")
+	reservation.Phone = request.Form.Get("phone")
+
+	err = repo.DB.UpdateReservation(reservation)
+	if err != nil {
+		helpers.ServerError(writer, err)
+		return
+	}
+
+	repo.App.Session.Put(request.Context(), "success", "Changes saved")
+
+	http.Redirect(writer, request, "/admin/all-reservation", http.StatusSeeOther)
 }
 
 func (repo *Repository) AdminAccount(writer http.ResponseWriter, request *http.Request) {

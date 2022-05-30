@@ -81,15 +81,15 @@
     }
 
     function deleteRes(id) {
-            attention.custom({
-                icon: 'warning',
-                msg: 'Are you sure?',
-                callback: function (result) {
-                    if (result !== false) {
-                        window.location.href = "/admin/delete-reservation/" + id
-                    }
+        attention.custom({
+            icon: 'warning',
+            msg: 'Are you sure?',
+            callback: function (result) {
+                if (result !== false) {
+                    window.location.href = "/admin/delete-new-reservation/" + id
                 }
-            })
-        }
+            }
+        })
+    }
 </script>
 {{ end }}
