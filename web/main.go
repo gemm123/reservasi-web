@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,9 +29,25 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Restriction{})
 	gob.Register(map[string]int{})
 
-	//ganti true kalau di production
-	app.InProduction = false
-	app.UseCache = false
+	//flags
+	inProduction := flag.Bool("production", true, "Application is in production")
+	useCache := flag.Bool("cache", true, "Use template cache")
+	dbHost := flag.String("dbhost", "localhost", "Database host")
+	dbName := flag.String("dbname", "", "Database name")
+	dbUser := flag.String("dbuser", "", "Database user")
+	dbPass := flag.String("dbpass", "", "Database password")
+	dbPort := flag.String("dbport", "5432", "Database port")
+	dbSSL := flag.String("dbssl", "disable", "Database ssl settings (disable, prefer, require)")
+
+	flag.Parse()
+
+	if *dbName == "" || *dbUser == "" {
+		fmt.Println("Missing required flags")
+		os.Exit(1)
+	}
+
+	app.InProduction = *inProduction
+	app.UseCache = *useCache
 
 	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -44,7 +61,7 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	//koneksi ke database
-	connectionString := "host=localhost port=5432 dbname=reservasi_web user=postgres password=gemmq123456"
+	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL)
 	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {
 		log.Fatal("cant connect to database")
