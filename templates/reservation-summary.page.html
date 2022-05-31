@@ -5,6 +5,9 @@
     {{ $reservation := index .Data "reservation" }}
     {{ $startDate := index .StringMap "start_date" }}
     {{ $endDate := index .StringMap "end_date" }}
+
+    <img src="/static/images/booking-summary.png" alt="" class="img-fluid">
+
     <div class="container">
         <div class="row">
             <div class="col">
@@ -38,6 +41,11 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <a href="/" class="btn btn-warning" style="background-color: #edd99c;">Browse more</a>
             </div>
         </div>
     </div>
